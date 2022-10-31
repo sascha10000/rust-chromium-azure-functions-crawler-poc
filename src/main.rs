@@ -12,7 +12,7 @@ async fn main() -> () {
         .map(|path| render_path(path, "html".to_owned(), false))
         .or(
             warp::path!("api" / "get-prerender" / String / String / bool)
-                .map(|param, element, is_http| render_path(param, element, is_http)),
+                .map(|path, element, is_http| render_path(path, element, is_http)),
         );
 
     let port_key = "FUNCTIONS_CUSTOMHANDLER_PORT";
@@ -25,11 +25,11 @@ async fn main() -> () {
 }
 
 fn render_path(
-    param: String,
+    path: String,
     element: String,
     is_http: bool,
 ) -> Result<Response<String>, warp::http::Error> {
-    return match prerender(param, element, is_http) {
+    return match prerender(path, element, is_http) {
         Ok(it) => Response::builder().body(it),
         Err(err) => Response::builder()
             .status(500)
